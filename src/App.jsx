@@ -11,6 +11,7 @@ function App() {
   });
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const [timer, setTimer] = useState(null);
 
   useEffect(() => {
@@ -22,25 +23,48 @@ function App() {
   const handleDateTimeChange = (event) => {
     const newDateTime = event.target.value;
     setTargetDateTime(newDateTime);
-  };
 
-  const startTimer = () => {
-    if (!targetDateTime) {
-      setMessage("Please select target time before starting the timer");
+    const currDate = new Date();
+    const selectedDate = new Date(newDateTime);
+
+    if (currDate > selectedDate) {
+      setMessage("Please select a future date and time");
+      setIsError(true);
+      return;
+    }
+
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() + 99);
+
+    if (new Date(newDateTime) > cutoffDate) {
+      setMessage("Selected time is more than 100 days");
+      setIsError(true);
     } else {
-      setTimer(
-        setInterval(() => {
-          setTimeRemaining(calculateRemainingTime(targetDateTime));
-        }, 1000)
-      );
-      setIsTimerStarted(true);
       setMessage("");
+      setIsError(false);
     }
   };
 
-  const stopTimer = () => {
+  const handleStartTimer = () => {
+    if (!targetDateTime) {
+      setMessage("Please select target time before starting the timer");
+      setIsError(true);
+      return;
+    }
+    if (!isError) {
+      setTimer(
+        setInterval(() => {
+          setTimeRemaining(calculateRemainingTime());
+        }, 1000)
+      );
+      setIsTimerStarted(true);
+    }
+  };
+
+  const handleStopTimer = () => {
     clearInterval(timer);
     setTimer(null);
+    setTargetDateTime("");
     setIsTimerStarted(false);
     setTimeRemaining({
       days: 0,
@@ -50,19 +74,11 @@ function App() {
     });
   };
 
-  const handleTimer = () => {
-    if (isTimerStarted) {
-      stopTimer();
-    } else {
-      startTimer();
-    }
-  };
-
   const calculateRemainingTime = () => {
     const remainingTime = new Date(targetDateTime) - new Date();
 
     if (remainingTime <= 0) {
-      stopTimer();
+      handleStopTimer();
       return {
         days: 0,
         hours: 0,
@@ -71,10 +87,24 @@ function App() {
       };
     }
 
-    const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-    const seconds = Math.floor((remainingTime / 1000) % 60);
+    let days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+    let minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+    let seconds = Math.floor((remainingTime / 1000) % 60);
+
+    // Apply maximum limits
+    if (days > 99) {
+      days = 99;
+    }
+    if (hours > 23) {
+      hours = 23;
+    }
+    if (minutes > 59) {
+      minutes = 59;
+    }
+    if (seconds > 59) {
+      seconds = 59;
+    }
 
     return { days, hours, minutes, seconds };
   };
@@ -88,29 +118,32 @@ function App() {
         value={targetDateTime}
       />
       {isTimerStarted ? (
-        <button onClick={handleTimer}>Cancel Timer</button>
+        <button onClick={handleStopTimer}>Cancel Timer</button>
       ) : (
-        <button onClick={handleTimer}>Start Timer</button>
+        <button onClick={handleStartTimer}>Start Timer</button>
       )}
-      <div className="timer">
-        <div className="card">
-          <div className="value">{timeRemaining.days}</div>
-          <div className="label">Days</div>
+      {isError ? (
+        <p>{message}</p>
+      ) : (
+        <div className="timer">
+          <div className="card">
+            <div className="value">{timeRemaining.days}</div>
+            <div className="label">Days</div>
+          </div>
+          <div className="card">
+            <div className="value">{timeRemaining.hours}</div>
+            <div className="label">Hours</div>
+          </div>
+          <div className="card">
+            <div className="value">{timeRemaining.minutes}</div>
+            <div className="label">Minutes</div>
+          </div>
+          <div className="card">
+            <div className="value">{timeRemaining.seconds}</div>
+            <div className="label">Seconds</div>
+          </div>
         </div>
-        <div className="card">
-          <div className="value">{timeRemaining.hours}</div>
-          <div className="label">Hours</div>
-        </div>
-        <div className="card">
-          <div className="value">{timeRemaining.minutes}</div>
-          <div className="label">Minutes</div>
-        </div>
-        <div className="card">
-          <div className="value">{timeRemaining.seconds}</div>
-          <div className="label">Seconds</div>
-        </div>
-      </div>
-      <p>{message}</p>
+      )}
     </div>
   );
 }
