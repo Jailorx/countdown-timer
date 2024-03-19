@@ -11,7 +11,7 @@ function App() {
   });
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [isAnyMessage, setisAnyMessage] = useState(false);
   const [timer, setTimer] = useState(null);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function App() {
 
     if (currDate > selectedDate) {
       setMessage("Please select a future date and time");
-      setIsError(true);
+      setisAnyMessage(true);
       return;
     }
 
@@ -38,20 +38,20 @@ function App() {
 
     if (new Date(newDateTime) > cutoffDate) {
       setMessage("Selected time is more than 100 days");
-      setIsError(true);
+      setisAnyMessage(true);
     } else {
       setMessage("");
-      setIsError(false);
+      setisAnyMessage(false);
     }
   };
 
   const handleStartTimer = () => {
     if (!targetDateTime) {
       setMessage("Please select target time before starting the timer");
-      setIsError(true);
+      setisAnyMessage(true);
       return;
     }
-    if (!isError) {
+    if (!isAnyMessage) {
       setTimer(
         setInterval(() => {
           setTimeRemaining(calculateRemainingTime());
@@ -64,7 +64,6 @@ function App() {
   const handleStopTimer = () => {
     clearInterval(timer);
     setTimer(null);
-    setTargetDateTime("");
     setIsTimerStarted(false);
     setTimeRemaining({
       days: 0,
@@ -78,6 +77,8 @@ function App() {
     const remainingTime = new Date(targetDateTime) - new Date();
 
     if (remainingTime <= 0) {
+      setisAnyMessage(true);
+      setMessage("🎉The countdown is over!Whats next on your adventure🎉");
       handleStopTimer();
       return {
         days: 0,
@@ -92,7 +93,6 @@ function App() {
     let minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
     let seconds = Math.floor((remainingTime / 1000) % 60);
 
-    // Apply maximum limits
     if (days > 99) {
       days = 99;
     }
@@ -122,7 +122,7 @@ function App() {
       ) : (
         <button onClick={handleStartTimer}>Start Timer</button>
       )}
-      {isError ? (
+      {isAnyMessage ? (
         <p>{message}</p>
       ) : (
         <div className="timer">
