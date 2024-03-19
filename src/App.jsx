@@ -14,7 +14,10 @@ function App() {
   const handleTimer = () => {
     if (!targetDateTime)
       setMessage("Please select target time before starting the timer");
-    else setIsTimerStarted(!isTimerStarted);
+    else {
+      setIsTimerStarted(!isTimerStarted);
+      setMessage("");
+    }
   };
   return (
     <div className="container">
