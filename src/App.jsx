@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import TimerCard from "./components/TimerCard/TimerCard";
 
 function App() {
   const [targetDateTime, setTargetDateTime] = useState("");
@@ -126,22 +127,9 @@ function App() {
         <p>{message}</p>
       ) : (
         <div className="timer">
-          <div className="card">
-            <div className="value">{timeRemaining.days}</div>
-            <div className="label">Days</div>
-          </div>
-          <div className="card">
-            <div className="value">{timeRemaining.hours}</div>
-            <div className="label">Hours</div>
-          </div>
-          <div className="card">
-            <div className="value">{timeRemaining.minutes}</div>
-            <div className="label">Minutes</div>
-          </div>
-          <div className="card">
-            <div className="value">{timeRemaining.seconds}</div>
-            <div className="label">Seconds</div>
-          </div>
+          {Object.entries(timeRemaining).map(([label, value]) => (
+            <TimerCard key={label} value={value} label={label} />
+          ))}
         </div>
       )}
     </div>
