@@ -13,6 +13,11 @@
   align-items: center;
 }
 
+.timer {
+  display: flex;
+  gap: 20px;
+}
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }

@@ -32,6 +32,24 @@ function App() {
       ) : (
         <button onClick={handleTimer}>Start Timer</button>
       )}
+      <div className="timer">
+        <div className="card">
+          <div className="value">10</div>
+          <div calssName="label">Days</div>
+        </div>
+        <div className="card">
+          <div className="value">10</div>
+          <div calssName="label">Hours</div>
+        </div>
+        <div className="card">
+          <div className="value">10</div>
+          <div calssName="label">Minutes</div>
+        </div>
+        <div className="card">
+          <div className="value">10</div>
+          <div calssName="label">Seconds</div>
+        </div>
+      </div>
       <p>{message}</p>
     </div>
   );
