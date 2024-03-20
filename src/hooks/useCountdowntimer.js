@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 
 const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   const [timeRemaining, setTimeRemaining] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+    Days: 0,
+    Hours: 0,
+    Minutes: 0,
+    Seconds: 0,
   });
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [message, setMessage] = useState("");
@@ -64,10 +64,10 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
     setTimer(null);
     setIsTimerStarted(false);
     setTimeRemaining({
-      days: 0,
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
+      Days: 0,
+      Hours: 0,
+      Minutes: 0,
+      Seconds: 0,
     });
   };
 
@@ -79,32 +79,32 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
       setMessage("🎉The countdown is over! Whats next on your adventure🎉");
       handleStopTimer();
       return {
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
+        Days: 0,
+        Hours: 0,
+        Minutes: 0,
+        Seconds: 0,
       };
     }
 
-    let days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    let hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-    let minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-    let seconds = Math.floor((remainingTime / 1000) % 60);
+    let Days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+    let Hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+    let Minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+    let Seconds = Math.floor((remainingTime / 1000) % 60);
 
-    if (days > 99) {
-      days = 99;
+    if (Days > 99) {
+      Days = 99;
     }
-    if (hours > 23) {
-      hours = 23;
+    if (Hours > 23) {
+      Hours = 23;
     }
-    if (minutes > 59) {
-      minutes = 59;
+    if (Minutes > 59) {
+      Minutes = 59;
     }
-    if (seconds > 59) {
-      seconds = 59;
+    if (Seconds > 59) {
+      Seconds = 59;
     }
 
-    return { days, hours, minutes, seconds };
+    return { Days, Hours, Minutes, Seconds };
   };
 
   return {
