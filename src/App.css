@@ -27,7 +27,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* overflow: hidden; */
 }
 
 .container span {
@@ -67,4 +66,33 @@ button:hover {
   margin-top: 10px;
   display: flex;
   gap: 20px;
+}
+
+@media (max-width: 864px) {
+  .container {
+    padding: 5px;
+    text-align: center;
+    background: rgb(19, 30, 37);
+  }
+  button {
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 540px) {
+  .container input {
+    padding: 5px;
+    font-size: 18px;
+    color: #cff8f8;
+    border: 2px solid #cff8f8;
+  }
+  .timer {
+    margin-top: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .timer .card {
+    width: 50%;
+  }
 }
