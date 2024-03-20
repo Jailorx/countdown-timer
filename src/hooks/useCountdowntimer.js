@@ -23,10 +23,6 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
     };
   }, [timer]);
 
-  useEffect(() => {
-    if (isAnyMessage) countdownErrorAudio.play();
-  }, [isAnyMessage]);
-
   const handleDateTimeChange = (event) => {
     const newDateTime = event.target.value;
     setTargetDateTime(newDateTime);
@@ -36,6 +32,7 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
 
     if (currDate > selectedDate) {
       setMessage("Please select a future date and time");
+      countdownErrorAudio.play();
       setisAnyMessage(true);
       return;
     }
@@ -45,6 +42,7 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
 
     if (new Date(newDateTime) > cutoffDate) {
       setMessage("Selected time is more than 100 days");
+      countdownErrorAudio.play();
       setisAnyMessage(true);
     } else {
       setMessage("");
@@ -55,6 +53,7 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   const handleStartTimer = () => {
     if (!targetDateTime) {
       setMessage("Please select target time before starting the timer");
+      countdownErrorAudio.play();
       setisAnyMessage(true);
       return;
     }
