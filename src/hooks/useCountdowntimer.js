@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import completeAudio from "../assets/complete.mp3";
+import error from "../assets/error.mp3";
 
 const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   const [timeRemaining, setTimeRemaining] = useState({
@@ -12,11 +14,18 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   const [isAnyMessage, setisAnyMessage] = useState(false);
   const [timer, setTimer] = useState(null);
 
+  const countdownFinishedAudio = new Audio(completeAudio);
+  const countdownErrorAudio = new Audio(error);
+
   useEffect(() => {
     return () => {
       clearInterval(timer);
     };
   }, [timer]);
+
+  useEffect(() => {
+    if (isAnyMessage) countdownErrorAudio.play();
+  }, [isAnyMessage]);
 
   const handleDateTimeChange = (event) => {
     const newDateTime = event.target.value;
@@ -76,6 +85,7 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
 
     if (remainingTime <= 0) {
       setisAnyMessage(true);
+      countdownFinishedAudio.play();
       setMessage("🎉The countdown is over! Whats next on your adventure🎉");
       handleStopTimer();
       return {
