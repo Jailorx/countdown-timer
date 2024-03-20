@@ -4,8 +4,8 @@ import TimerCard from "./components/TimerCard/TimerCard";
 import useCountdownTimer from "./hooks/useCountdowntimer";
 
 function App() {
-  const [targetDateTime, setTargetDateTime] = useState("");
   const {
+    targetDateTime,
     timeRemaining,
     isTimerStarted,
     isAnyMessage,
@@ -13,7 +13,7 @@ function App() {
     handleStartTimer,
     handleStopTimer,
     handleDateTimeChange,
-  } = useCountdownTimer(targetDateTime, setTargetDateTime);
+  } = useCountdownTimer();
 
   return (
     <div className="container">

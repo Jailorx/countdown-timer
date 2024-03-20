@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import completeAudio from "../assets/complete.mp3";
 import error from "../assets/error.mp3";
 
-const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
+const useCountdownTimer = () => {
+  const [targetDateTime, setTargetDateTime] = useState(() => {
+    const savedTargetDateTime = localStorage.getItem("targetDateTime");
+    return savedTargetDateTime || "";
+  });
   const [timeRemaining, setTimeRemaining] = useState({
     Days: 0,
     Hours: 0,
@@ -18,10 +22,35 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   const countdownErrorAudio = new Audio(error);
 
   useEffect(() => {
+    const savedTargetDateTime = localStorage.getItem("targetDateTime");
+    if (savedTargetDateTime) {
+      setTargetDateTime(savedTargetDateTime);
+      startCountdown();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (targetDateTime) {
+      localStorage.setItem("targetDateTime", targetDateTime);
+    } else {
+      localStorage.removeItem("targetDateTime");
+    }
+  }, [targetDateTime]);
+
+  useEffect(() => {
     return () => {
       clearInterval(timer);
     };
   }, [timer]);
+
+  const startCountdown = () => {
+    setIsTimerStarted(true);
+    setTimer(
+      setInterval(() => {
+        setTimeRemaining(calculateRemainingTime());
+      }, 1000)
+    );
+  };
 
   const handleDateTimeChange = (event) => {
     const newDateTime = event.target.value;
@@ -58,12 +87,7 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
       return;
     }
     if (!isAnyMessage) {
-      setTimer(
-        setInterval(() => {
-          setTimeRemaining(calculateRemainingTime());
-        }, 1000)
-      );
-      setIsTimerStarted(true);
+      startCountdown();
     }
   };
 
@@ -80,12 +104,15 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   };
 
   const calculateRemainingTime = () => {
+    console.log("In calculate function");
     const remainingTime = new Date(targetDateTime) - new Date();
+    console.log(new Date(targetDateTime));
 
     if (remainingTime <= 0) {
       setisAnyMessage(true);
-      countdownFinishedAudio.play();
       setMessage("🎉The countdown is over! Whats next on your adventure🎉");
+      countdownFinishedAudio.play();
+      localStorage.removeItem("targetDateTime");
       handleStopTimer();
       return {
         Days: 0,
@@ -117,6 +144,7 @@ const useCountdownTimer = (targetDateTime, setTargetDateTime) => {
   };
 
   return {
+    targetDateTime,
     timeRemaining,
     isTimerStarted,
     isAnyMessage,
